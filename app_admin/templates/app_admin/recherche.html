@@ -1,0 +1,336 @@
+{% extends "baseA.html" %}
+
+{% block content %}
+    {% include 'baseMenu.html' %}
+    <style>
+        .container {
+            margin-top: 2em;
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+    </style>
+
+
+    <div class="main-content">
+
+    {% if messages %}
+    <div class="m-9 alert alert-danger alert-dismissible fade show" role="alert">
+        <ul>
+            {% for message in messages %}
+                <li class="text-center"> {% if message.tags %} {{ message }} {% endif %}</li>
+            {% endfor %}
+        </ul>
+        <button type="button" class="close" data-dismiss="alert"> <span>&times;</span> </button>
+    </div>
+{% endif %}
+        <h2 class="title-3 m-l-10 m-b-10"><a href="{% url 'accueil' %}"><- Accueil </a></h2>
+
+        <div class="section__content section__content--p30">
+            <div class="container-fluid">
+                <h1>Résultats de recherche pour "{{ query }}"</h1>
+                <hr>
+
+                {% if entrep %}
+                    <h1 class="text-center text-light pt-3 pb-3" style="background-color: #337ab7; color:#fff;">Entreprise(s)</h1>
+                    <div class="row m-t-30">
+                        <div class="col-md-12">
+                            <!-- DATA TABLE -->
+                            <div class="table-responsive m-b-40">
+                                <table class="table table-bordered table-data3">
+                                    <thead>
+                                        <tr>
+                                            <th>Utilisateur(s)</th>
+                                            <th>Entreprise(s)</th>
+                                            <th>Email(s)</th>
+                                            <th>Téléphone(s)</th>
+                                            <th>Immatriculation(s)</th>
+                                            <th>Activité(s)</th>
+                                            <th>Adresse(s)</th>
+                                            <th>Dates D'ajout</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-dark">
+                                        {% for entrep in entrep %}
+                                            <tr>
+                                                <td>{{ entrep.utilisateur.first_name }} {{ entrep.utilisateur.last_name }}</td>
+                                                <td>{{ entrep.nom_entrep }}</td>
+                                                <td>{{ entrep.email_entrep }}</td>
+                                                <td>{{ entrep.idtel }} {{ entrep.telephone }}</td>
+
+                                                <td>{% if entrep.immatriculation %}{{ entrep.immatriculation }}{% else %}vide{% endif %}</td>
+                                                <td>{{ entrep.activite }}</td>
+                                                <td>{{ entrep.adresse_entrep }}</td>
+                                                <td>{{ entrep.date }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- END DATA TABLE -->
+                        </div>
+                    </div>
+                {% else %}
+                    <h2 class="text-center">Aucune entreprise correspondante</h2>
+                    <br>
+                {% endif %}
+
+                {% if marche %}
+                    <h1 class="text-center text-light pt-3 pb-3" style="background-color: #337ab7; color:#fff;">Marché(s) Public(s)</h1>
+
+                    <div class="row m-t-30">
+                        <div class="col-md-12">
+                            <!-- DATA TABLE -->
+                            <div class="table-responsive m-b-40">
+                                <table class="table table-bordered table-data3">
+                                    <thead>
+                                        <tr>
+                                            <th>Codes</th>
+                                            <th>Descriptions</th>
+                                            <th>Pays</th>
+                                            <th>Status</th>
+                                            <th>Documents</th>
+                                            <th>Dates Limite</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for marche in marche %}
+                                            <tr>
+                                                <td>{{ marche.code }}</td>
+                                                <td>{{ marche.description|slice:":50" }}.....</td>
+                                                <td>{{ marche.pays }}</td>
+                                                {% if marche.status %}
+                                                    <td class="bg-success text-light">Ouvert</td>
+                                                {% else %}
+                                                    <td class="bg-danger text-light">Fermé</td>
+                                                {% endif %}
+                                                <td>
+                                                    {% if marche.doc1 %}
+                                                        <a href="{{ marche.doc1.url }}">{{ marche.doc1 }}</a><br>
+                                                    {% endif %}
+                                                    {% if marche.doc2 %}
+                                                        <a href="{{ marche.doc2.url }}">{{ marche.doc2 }}</a><br>
+                                                    {% endif %}
+                                                    {% if marche.doc3 %}
+                                                        <a href="{{ marche.doc3.url }}">{{ marche.doc3 }}</a><br>
+                                                    {% endif %}
+                                                    {% if marche.doc4 %}
+                                                        <a href="{{ marche.doc4.url }}">{{ marche.doc4 }}</a><br>
+                                                    {% endif %}
+                                                    {% if marche.doc5 %}
+                                                        <a href="{{ marche.doc5.url }}">{{ marche.doc5 }}</a><br>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ marche.date_limite }} à {{ marche.heure_limite }}</td>
+                                                <td>
+                                                    <div class="table-data-feature">
+                                                        <a href="{% url 'modifier_offre' marche.code %}">
+                                                            <button class="item" data-toggle="tooltip"
+                                                                data-placement="top" title="" data-original-title="modifier">
+                                                                <i class="zmdi zmdi-edit"></i>
+                                                            </button>
+                                                        </a>
+                                                        <a href="{% url 'supprimer_offre' marche.code %}">
+                                                            <button onclick="return confirm('voulez-vous supprimer ce marché public ? ')"
+                                                                class="item" data-toggle="tooltip" data-placement="top" title=""
+                                                                data-original-title="supprimer">
+                                                                <i class="zmdi zmdi-delete"></i>
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- END DATA TABLE -->
+
+                            <div class="row centered-card">
+                                {% for offre in marche %}
+                                    <div class="card text-center col-11 col-md-5 col-lg-3 mb-2 mt-1 ml-1">
+                                        {% if not offre.status %}
+                                            <a href="{% url 'candidature_par_offre' offre.code %}">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{ offre.code }}</h5>
+                                                    <p class="card-text">{{ offre.description|slice:":50" }}...</p>
+                                                    <p class="card-text text-success">{{ offre.date_limite }} à {{ offre.heure_limite }}</p>
+                                                    <p class="card-text text-success text-dark">Offre = {{ offre.nombre_candidatures }}</p>
+                                                </div>
+                                            </a>
+                                        {% else %}
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ offre.code }}</h5>
+                                                <p class="card-text">{{ offre.description|slice:":50" }}...</p>
+                                                <p class="card-text text-danger">Patientez jusqu'au {{ offre.date_limite }} à {{ offre.heure_limite }}</p>
+                                                <p class="card-text text-success text-dark">Offre = {{ offre.nombre_candidatures }}</p>
+                                            </div>
+                                        {% endif %}
+                                        <a href="{% url 'affecte_employe_marche_public' offre.pk %}">
+                                            <button class="btn btn-success col-12 col-md-12 col-lg-12">Affectez un employé</button>
+                                        </a>
+                                    </div>
+                                
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+
+                {% else %}
+                    <h2 class="text-center">Aucun marché public correspondant</h2>
+                    <br>
+                {% endif %}
+
+                {% if employeurs %}
+                <h1 class="text-center text-light pt-3 pb-3" style="background-color: #337ab7; color:#fff;">Employé(s)</h1>
+
+                <div class="row m-t-30">
+                    <div class="col-md-12">
+                        <!-- DATA TABLE-->
+                        <div class="table-responsive m-b-40">
+                            <table class="table table-bordered table-data3">
+                                <thead>
+                                    <tr>
+                                    <th>Utilisateurs</th>
+                                    <th>Fonction du 1er employé</th>
+                                    <th>Fonction du 2er employé</th>
+                                    <th>Mot de passes</th>
+                                    <th>code du  1er employé</th>
+                                    <th>code du  2eme employé</th>
+                                    <th>Dates D'ajout</th>
+                                    <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-dark">
+                                    {% for employeur in employeurs %}
+                                    <tr>
+                                        <td>{{ employeur.utilisateur.username }}</td>
+                                        <td>{{ employeur.fonction1 }}</td>
+                                        <td>{{ employeur.fonction2 }}</td>
+                                        <td>{{ employeur.utilisateur.password }}</td>
+                                        <td>{{ employeur.code1 }}</td>
+                                        <td>{{ employeur.code2 }}</td>
+                                        <td>{{ employeur.utilisateur.date_joined }}</td>
+                                        <td>
+                                            <div class="table-data-feature">
+                                                
+                                                <a href="{%url 'modifier_employeur' employeur.utilisateur.pk %}"><button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editer">
+                                                  <i class="zmdi zmdi-edit"></i> 
+                                                </button></a>
+                                                {%if employeur.utilisateur.is_active %}
+                                                <a href="{%url 'delete_employeur' employeur.utilisateur.pk %}"> <button onclick="return confirm('voulez-vous desactivé le compte de cet employé ? ')" class="item" data-toggle="tooltip" id="delete" data-placement="top" title="" data-original-title="Desactivé">
+                                                      <i class="zmdi  zmdi-eye-off"></i>
+                                                </button></a>
+                                                {% else %}
+                                                <a href="{%url 'active_employeur' employeur.utilisateur.pk %}"> <button onclick="return confirm('voulez-vous activé le compte de cet employé ? ')" class="item" data-toggle="tooltip"  data-placement="top" title="" data-original-title="Activé">
+                                                    <i class="zmdi  zmdi-account-add"></i>
+                                              </button></a>
+                                                {%endif%}
+                                            </div>
+                                        </td>
+                                        
+                                    </tr>
+                                   
+                                    {% endfor %}
+                                </tbody>
+                            
+                        </table>
+    
+    
+                    </div>
+                    <!-- END DATA TABLE-->
+                </div>
+                {%else%}
+                <h2 class="text-center">Aucun employé correspondant</h2><br>
+
+                {%endif%}
+
+                
+                </div>
+                {% if admins %}
+                {% if user.is_staff %} 
+                <h1 class="text-center text-light pt-3 pb-3" style="background-color: #337ab7; color:#fff;">Administrateur(s)</h1>
+
+                <div class="row m-t-30">
+                    <div class="col-md-12">
+                        <!-- DATA TABLE-->
+                        <div class="table-responsive m-b-40">
+                            <table class="table table-bordered table-data3">
+                                <thead>
+                                    <tr>
+                                    <th>Utilisateurs</th>
+                                    <th>nom complet</th>
+                                    <th>email</th>
+                                    <th>status</th>
+                                    <th>Mot de passes</th>
+                                    <th>Dates D'ajout</th>
+                                    <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-dark">
+                                    {% for admin in admins %}
+                                    <tr>
+                                        <td>{{ admin.username }}</td>
+                                        <td>{{ admin.last_name }} {{ admin.first_name }}</td>
+                                        <td>{{ admin.email }}</td>
+
+                                        {% if admin.is_staff %}
+                                            <td>Super Admin</td>
+                                        {% else %}
+                                            <td>Admin</td>
+                                        {% endif %}
+                                        <td>{{ admin.password }}</td>
+                                    <td>{{ admin.date_joined }}</td>
+                                        <td>
+                                            <div class="table-data-feature">
+                                                
+                                                <a href="{%url 'modifier_admin' admin.pk %}"><button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editer">
+                                                <i class="zmdi zmdi-edit"></i> 
+                                                </button></a>
+                                                {%if admin.is_active %}
+                                                <a href="{%url 'delete_admin' admin.pk %}"> <button onclick="return confirm('voulez-vous desactiver le compte de cet administrateur ? ')" class="item" data-toggle="tooltip" id="delete" data-placement="top" title="" data-original-title="Desactivé">
+                                                    <i class="zmdi zmdi-eye-off"></i>
+                                                </button></a>
+                                                {%else%}
+                                                <a href="{%url 'active_admin' admin.pk %}"> <button onclick="return confirm('voulez-vous activer le compte de cet administrateur ? ')" class="item" data-toggle="tooltip"   data-placement="top" title="" data-original-title="Activé">
+                                                    <i class="zmdi zmdi-account-add"></i>
+                                            </button></a>
+                                                {%endif%}
+                                            
+                                            </div>
+                                        </td>
+                                        
+                                    </tr>
+                                
+                                    {% endfor %}
+                                </tbody>
+                            
+                            </table>
+
+
+                        </div>
+                        <!-- END DATA TABLE-->
+                    </div>
+                    {% else %}
+                    <h2 class="text-center"> vous n'avez pas le privilege pour voir les administrateurs </h2>
+
+                    {% endif %}
+                        {% else %}
+                        <h2 class="text-center"> Aucun Administrateur correspondant </h2>
+                        
+                        {% endif %}
+          
+        </div>
+    </div>
+{% endblock %}

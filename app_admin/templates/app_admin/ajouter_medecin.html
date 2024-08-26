@@ -1,0 +1,89 @@
+{% extends 'baseA.html' %}
+{% block content %}
+{% include 'baseMenu.html' %}
+
+    <div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+                <div class="overview-wrap mb-3">
+                    <h2 class="title-3"><a href="{% url 'medecins' %}"><- Les Medecins</a></h2>
+
+
+                </div>
+            </div>
+        </div>
+
+            <div class="container" style="margin-bottom:3em;">
+                <div class="row justify-content-center">
+                  <div class="col-md-7">
+                    <div class="card mt-5 mb-5">
+                      <div class="card-body">
+                        {% if not u %}
+                        <h2 class="text-center mb-4">Ajoutez un Medecin</h2>
+                        {% else %}
+                        <h2 class="text-center mb-4">Modifier le Medecin {{u.username}}</h2>
+                        {% endif %}
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            {% if not u %}
+                            <div class="form-group">
+                              <label for="username">Nom d'utilisateur * </label>
+                              <input type="text" class="form-control" id="username" name="username" >
+                           </div>
+                          {% endif %}
+
+
+                         <div class="form-group">
+                            <label for="nom">Nom</label>
+                            <input type="text" class="form-control" id="nom" name="nom" value="{% if u %}{{u.last_name}}{% endif %}">
+                         </div>
+                         <div class="form-group">
+                            <label for="prenom">Prenom</label>
+                            <input type="text" class="form-control" id="prenom" name="prenom" value="{% if u %}{{u.first_name}}{% endif %}">
+                         </div>
+                         <div class="form-group">
+                            <label for="password">mot de passe {% if not u %}*{% endif %}</label>
+                            <input type="password" class="form-control" id="password" name="password" >
+                         </div>
+                         <div class="form-group">
+                            <label for="password1">Confirmez le mot de passe {% if not u %}*{% endif %}</label>
+                            <input type="password" class="form-control" id="password1" name="password1" >
+                         </div>
+
+                         {% if u %}
+                         <input type="submit" class="btn btn-custom w-100  font-weight-bold"   style="background-color:#1474b8; color: #fff;" value="Modifier" >
+                         {% else %}
+                         <input type="submit" class="btn btn-custom w-100  font-weight-bold"   style="background-color:#1474b8; color: #fff;" value="Ajouter" >
+                         {% endif %}
+
+
+                          {% if messages %}
+            <div class="m-9 alert alert-danger alert-dismissible fade show" role="alert">
+                <ul>
+                {% for message in messages %}
+                <li class="text-center"> {% if message.tags %} {{ message }}  {% endif %}</li>
+                {% endfor %}
+                </ul>
+                <button type="button" class="close" data-dismiss="alert"> <span>&times;</span> </button>
+
+            </div>
+
+
+            {% endif %}
+
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

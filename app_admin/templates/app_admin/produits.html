@@ -1,0 +1,104 @@
+{% extends 'baseA.html' %}
+{% block content %}
+{% include 'baseMenu.html' %}
+
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+
+            {% if messages %}
+            <div class="m-9 alert alert-success alert-dismissible fade show" role="alert">
+                <ul>
+                {% for message in messages %}
+                <li class="text-center"> {% if message.tags %} {{ message }}  {% endif %}</li>
+                {% endfor %}
+                </ul>
+                <button type="button" class="close" data-dismiss="alert"> <span>&times;</span> </button>
+
+            </div>
+             {% endif %}
+             <div class="row">
+                <div class="col-md-12">
+                    <div class="overview-wrap mb-3">
+                        <h2 class="title-3"><a href="{% url 'accueil'%}"><- Accueil </a></h2>
+                        <a href="{% url 'ajouter_produit' %}">
+                        <button class="au-btn au-btn-icon au-btn--blue">
+                            <i class="zmdi zmdi-plus"></i>Ajouter un produit</button></a>
+                    </div>
+                </div>
+            </div>
+
+
+            <h2 class="text-center text-light pt-2 pb-3 text-uppercase" style="background-color:#8cbf43;">La Liste des produits</h2>
+
+            <div class="row m-t-30">
+                <div class="col-md-12">
+                    <!-- DATA TABLE-->
+                    <div class="table-responsive m-b-40">
+                        <table class="table table-bordered table-data3">
+                            <thead style="background-color:#8cbf43;">
+                                <tr>
+                                <th>Nom(s)</th>
+                                <th>Prix</th>
+                                <th>Description(s)</th>
+                                <th>Quantité(s)</th>
+                                <th>Place(s)</th>
+
+                                <th>Image(s)</th>
+                                <th>Prescription?</th>
+                                <th>Dates D'ajout</th>
+                                <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-dark">
+                                {% for produit in produits %}
+                                <tr>
+                                    <td>{{ produit.nom }}</td>
+                                    <td>{{ produit.prix }} GNF</td>
+                                    <td>{% if produit.description %}{{produit.description|slice:":40"}}...{% else %} Vide{% endif %}</td>
+                                    <td>{{ produit.quantite }}</td>
+                                    <td>{{ produit.place }}</td>
+                                    <td>
+                                    {% if produit.image %}
+                                    <img src="{{ produit.image.url }}" alt="" width="100px">
+                                    {% else %}
+                                    Pas d'image
+                                    {% endif %}
+                                        </td>
+                                    <td>{% if produit.odronnance  %}Oui {% else %} Non {% endif %}</td>
+                                    <td>{{ produit.created_at }}</td>
+                                    <td>
+                                        <div class="table-data-feature">
+
+                                            <a href="{% url 'modifier_produit' produit.pk %}"><button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editer">
+                                              <i class="zmdi zmdi-edit"></i>
+                                            </button></a>
+
+
+                                            <a href="{% url 'sup_produit' produit.pk %}"> <button onclick="return confirm('voulez-vous supprimer ce produit ? ')" class="item" data-toggle="tooltip" id="delete" data-placement="top" title="" data-original-title="supprimer">
+                                                  <i class="zmdi  zmdi-delete"></i>
+                                            </button></a>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                {%empty%}
+                                <h2 class="text-center"> Aucun produit n'a été ajouté pour le moment </h2>
+                                <br>
+                                {% endfor %}
+                            </tbody>
+
+                    </table>
+
+
+                </div>
+                <!-- END DATA TABLE-->
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

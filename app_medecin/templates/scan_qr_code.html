@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Code Scanner</title>
+</head>
+<body>
+    <h1>QR Code Scanner</h1>
+    <video id="video" autoplay></video>
+    <p id="result"></p>
+    
+    <form id="qrCodeForm" action="{% url 'scan_qr_code' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="qrCodeValue" id="qrCodeValue">
+        <input type="submit" value="Envoyer" style="display:none;">
+    </form>
+    
+    <script src="https://cdn.rawgit.com/cozmo/jsQR/master/dist/jsQR.js"></script>
+    <script>
+        const video = document.getElementById('video');
+        const result = document.getElementById('result');
+        const qrCodeForm = document.getElementById('qrCodeForm');
+        const qrCodeValueField = document.getElementById('qrCodeValue');
+
+        // Accéder à la caméra
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(error => console.error('Erreur d\'accès à la caméra :', error));
+
+        // Détecter les QR codes
+        const scanQRCode = () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+            if (code) {
+                result.textContent = 'QR Code détecté : ' + code.data;
+                qrCodeValueField.value = code.data; // Mettre la valeur du QR code dans le champ caché
+                qrCodeForm.submit(); // Soumettre automatiquement le formulaire
+            } else {
+                result.textContent = 'Aucun QR Code détecté.';
+            }
+
+            requestAnimationFrame(scanQRCode);
+        };
+
+        video.addEventListener('canplay', () => {
+            scanQRCode();
+        });
+
+    </script>
+</body>
+</html>

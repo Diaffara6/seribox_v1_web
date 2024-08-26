@@ -1,0 +1,87 @@
+
+{% extends "base.html" %}
+{% load static%}
+{% block content %}
+
+<style>
+
+    
+    h1 {
+        font-size: 2em;
+        font-weight: bold;
+    }
+    
+    hr {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+    
+    .card {
+        margin-bottom: 2em;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+    
+    .card:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-img-top {
+        height: 150px;
+        object-fit: cover;
+    }
+    
+    .card-title {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 0.5em;
+    }
+    
+    .card-text {
+        font-size: 0.9em;
+        color: #666;
+    }
+    
+</style>
+
+<div class="container">
+
+    <hr>
+    {% if produits %}
+        <div class="row">
+            {% for produit in produits %}
+            <div class="col-md-3">
+                <a href="{% url 'detail' id=produit.id %}">
+                    <div class="card">
+                        <img class="card-img-top" src="{{ produit.image.url }}" alt="{{ produit.nom }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ produit.nom }}</h5>
+                            <p class="card-text">{{ produit.description }}</p>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+
+     <script>
+        if ('speechSynthesis' in window) {
+            const synth = window.speechSynthesis;
+
+            const text = "I NA ran fén fé mouna- ra Na-maa-ra- bilén a fala-ra";
+            const utterance = new SpeechSynthesisUtterance(text);
+            synth.speak(utterance);
+
+        } else {
+            alert("L'API Web Speech n'est pas prise en charge dans ce navigateur.");
+        }
+    </script>
+        <h1 class='text-center'>Aucun produit trouvé.</h1>
+    {% endif %}
+</div>
+
+{% endblock %}

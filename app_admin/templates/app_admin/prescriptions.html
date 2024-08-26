@@ -1,0 +1,102 @@
+{% extends 'baseA.html' %}
+{% block content %}
+{% include 'baseMenu.html' %}
+
+<div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+
+            {% if messages %}
+            <div class="m-9 alert alert-success alert-dismissible fade show" role="alert">
+                <ul>
+                {% for message in messages %}
+                <li class="text-center"> {% if message.tags %} {{ message }}  {% endif %}</li>
+                {% endfor %}
+                </ul>
+                <button type="button" class="close" data-dismiss="alert"> <span>&times;</span> </button>
+
+            </div>
+             {% endif %}
+             <div class="row">
+                <div class="col-md-12">
+                    <div class="overview-wrap mb-3">
+                        <h2 class="title-3"><a href="{% url 'accueil'%}"><- Accueil </a></h2>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <h2 class="text-center text-light pt-2 pb-3 text-uppercase" style="background-color:#8cbf43;">Les Prescriptions Effectuées</h2>
+
+            <div class="row m-t-30">
+                <div class="col-md-12">
+                    <!-- DATA TABLE-->
+                    <div class="table-responsive m-b-40">
+                        <table class="table table-bordered table-data3">
+                            <thead style="background-color:#8cbf43;">
+                                <tr>
+                                <th>Medecin(s)</th>
+                                <th>Medicament(s)</th>
+                                <th>Qr code(s)</th>
+				<th>Date(s)</th>
+                                <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-dark">
+                                {% for p in presc %}
+                                <tr>
+                                    <td>{{ p.utilisateur }}</td>
+                                    <td>{% if p.med1 %}
+                                        <p>  {{p.med1}} </p>
+                                    {% endif %}
+
+                                    {% if p.med2 %}
+                                        <p>  {{p.med2}} </p>
+                                    {% endif %}
+
+                                    {% if p.med3 %}
+                                        <p>  {{p.med3}} </p>
+                                    {% endif %}
+
+                                    {% if p.med4 %}
+                                        <p>  {{p.med4}} </p>
+                                    {% endif %}</td>
+                                    <td>{% if p.qr_code %}
+                                        <img src="{{ p.qr_code.url }}" alt="qr code" width="100px">
+                                        {% else %}
+                                        Qr code indisponible
+                                        {% endif %}</td>
+				<td>{{ p.date }}</td>
+
+                                    <td>
+                                        <div class="table-data-feature">
+
+
+                                            <a href="{%url 'sup_prescription' p.id %}"> <button onclick="return confirm('voulez-vous supprimer cette Prescription ? ')" class="item" data-toggle="tooltip" id="delete" data-placement="top" title="" data-original-title="supprimer">
+                                                  <i class="zmdi  zmdi-delete"></i>
+                                            </button></a>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                {%empty%}
+                                <h2 class="text-center"> Aucune Prescription n'a été effectuée pour le moment </h2>
+                                <br>
+                                {% endfor %}
+                            </tbody>
+
+                    </table>
+
+
+                </div>
+                <!-- END DATA TABLE-->
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

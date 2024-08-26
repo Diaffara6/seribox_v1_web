@@ -1,0 +1,99 @@
+{% extends 'baseA.html' %}
+{% block content %}
+{% include 'baseMenu.html' %}
+
+    <div class="main-content">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+                <div class="overview-wrap mb-3">
+                    <h2 class="title-3"><a href="{% url 'produits' %}"><- Les Produits</a></h2>
+
+
+                </div>
+            </div>
+        </div>
+
+            <div class="container" style="margin-bottom:3em;">
+                <div class="row justify-content-center">
+                  <div class="col-md-7">
+                    <div class="card mt-5 mb-5">
+                      <div class="card-body">
+
+                        {% if not p %}
+                         <h2 class="text-center mb-4">Ajoutez un Produit</h2>
+                         {% else %}
+                         <h2 class="text-center mb-4">Modifier {{ p.nom }}</h2>
+                        {% endif %}
+
+
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                          <div class="form-group">
+                            <label for="nom">Nom*</label>
+                            <input type="text" class="form-control" id="nom" name="nom" value="{%if p %}{{p.nom}}{%endif%}">
+                         </div>
+                          <div class="form-group">
+                            <label for="prix">prix*</label>
+                            <input type="number" class="form-control" id="prix" name="prix" value="{%if p %}{{p.prix}}{%endif%}">
+                          </div>
+                          <div class="form-group">
+                            <label for="description">description</label>
+                            <input type="text" class="form-control" id="description" name="description" value="{%if p %}{{p.description}}{%endif%}">
+                          </div>
+                          <div class="form-group">
+                            <label for="quantite">quantite*</label>
+                            <input type="text" class="form-control" id="quantite" name="quantite" value="{%if p %}{{p.quantite}}{%endif%}">
+                          </div>
+                            <div class="form-group">
+                                <label for="compartiment">Emplacement*</label>
+                                <input type="text" class="form-control" id="place" name="place" value="{%if p %}{{p.place}}{%endif%}">
+                          </div>
+                          <div class="form-group">
+                            <label for="odronnance">Prescription neccessaire ? </label>
+                            <input type="checkbox" class="ml-2 form-check-input" id="odronnance" name="odronnance"  {% if p and p.odronnance %}checked{% endif %}>
+                          </div>
+                          <div class="form-group">
+                            <label for="image">image*</label><br>
+                            {% if p and p.image %}
+                            Avant : <img src="{{ p.image.url }}" width="50px">
+                            {% endif %}
+                            <input type="file" class="form-control" name="image" id="image"><br>
+                          </div>
+
+                         {% if p %}
+                         <input type="submit" class="btn btn-custom w-100 font-weight-bold"   style="background-color:#1474b8; color: #fff;" value="Modifier" >
+                         {% else %}
+                         <input type="submit" class="btn btn-custom w-100 font-weight-bold"   style="background-color:#1474b8; color: #fff;" value="Ajouter" >
+                         {% endif %}
+
+
+                          {% if messages %}
+            <div class="m-9 alert alert-danger alert-dismissible fade show" role="alert">
+                <ul>
+                {% for message in messages %}
+                <li class="text-center"> {% if message.tags %} {{ message }}  {% endif %}</li>
+                {% endfor %}
+                </ul>
+                <button type="button" class="close" data-dismiss="alert"> <span>&times;</span> </button>
+
+            </div>
+
+
+            {% endif %}
+
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

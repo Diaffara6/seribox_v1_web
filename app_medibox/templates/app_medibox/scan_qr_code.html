@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center vh-300 ">
+    <div class="card col-lg-6">
+        <div class="card-body d-flex flex-column align-items-center">
+            <h1>Scanneur de QR Code</h1>
+            <video id="video" style="width: 500px;" autoplay></video>
+            <p id="result" class="m-4 bg-success text-light"></p>
+
+            <form id="qrCodeForm" action="{% url 'scan_qr_code' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="qrCodeValue" id="qrCodeValue">
+                <input type="submit" value="Envoyer" style="display: none;">
+            </form>
+
+ <script src="https://cdn.rawgit.com/cozmo/jsQR/master/dist/jsQR.js"></script>
+            <script>
+                const video = document.getElementById('video');
+                const result = document.getElementById('result');
+                const qrCodeForm = document.getElementById('qrCodeForm');
+                const qrCodeValueField = document.getElementById('qrCodeValue');
+                let qrCodeScanned = false;
+
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => {
+                        video.srcObject = stream;
+                        video.play();
+                    })
+                    .catch(error => console.error('Erreur d\'accès à la caméra :', error));
+
+                const scanQRCode = () => {
+                    if (!qrCodeScanned) {
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                        if (code) {
+                            qrCodeValueField.value = code.data;
+                            qrCodeScanned = true;
+                            result.textContent = 'Qr_Code scanné patientez un peu ';
+                            qrCodeForm.submit();
+                        }
+                    }
+
+                    requestAnimationFrame(scanQRCode);
+                };
+
+                video.addEventListener('canplay', () => {
+                    scanQRCode();
+                });
+
+            </script>
+       </div>
+    </div>
+</div>
+{% endblock %}

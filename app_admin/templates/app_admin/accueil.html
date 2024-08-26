@@ -1,0 +1,184 @@
+{% extends 'baseA.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% include 'baseMenu.html' %}
+
+<style type="text/css">
+    /* Styles personnalisés pour les grilles */
+.custom-grid {
+    margin-bottom: 30px; /* Espace entre les rangées */
+}
+
+/* Personnalisation des colonnes */
+.custom-grid .col-md-6,
+.custom-grid .col-lg-3 {
+    padding: 15px; /* Espace interne des colonnes */
+}
+
+/* Ajout de bordures et de styles de survol pour les cartes */
+.custom-grid .overview-item {
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+    transition: border-color 0.3s, transform 0.3s;
+    transform: scale(1.02);
+}
+
+.custom-grid .overview-item:hover {
+    border-color: #007bff;
+    transform: scale(1.02);
+}
+
+</style>
+
+        <!-- MAIN CONTENT-->
+        <div class="main-content">
+            <div class="section__content section__content--p30">
+                <div class="container-fluid">
+
+                    <div class="row custom-grid">
+                        <div class="col-sm-6 col-lg-4 col-md-6" >
+
+                          <a href="{% url 'produits' %}">
+                            <div class="overview-item" style="background-image: url('{% static 'medC.jpg' %}'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+                                <div class="overview__inner">
+                                    <div class="overview-box clearfix">
+                                        <div class="icon">
+                                            <i class=""></i>
+                                        </div>
+                                        <div class="text">
+                                            <h2> </h2>
+                                            <span class="text-dark font-weight-bold ml-3 mb-5">Produits</span>
+                                        </div>
+                                    </div>
+                                    <div class="overview-chart">
+                                        <canvas  ></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                          </a>
+                        </div>
+                        <div class="col-sm-6 col-lg-4 col-md-6" >
+
+                             <a href="{%url 'historiques'%}">
+                                <div class="overview-item  " style="background-image: url('{% static 'cmd.png' %}'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class=""></i>
+                                            </div>
+                                            <div class="text">
+                                                <h2> </h2>
+                                                <span class="text-dark font-weight-bold ml-3 mb-5">Commandes</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas id=""></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+    
+                        <div class="col-sm-6 col-lg-4 col-md-6">
+
+                             <a href="{%url 'prescriptions'%}">
+                                <div class="overview-item " style="background-image: url('{% static 'prescription.jpeg' %}'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+                                    <div class="overview__inner">
+                                        <div class="overview-box clearfix">
+                                            <div class="icon">
+                                                <i class=""></i>
+                                            </div>
+                                            <div class="text">
+                                                <h2> </h2>
+                                                <span class="text-dark font-weight-bold">Prescriptions</span>
+                                            </div>
+                                        </div>
+                                        <div class="overview-chart">
+                                            <canvas></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <h1 class="text-center text-light pt-3 pb-3 text-uppercase" style="background-color: #1474b8; color:#fff;">Quelques Produits Populaires </h1>
+
+                    <div class="row m-t-30">
+                        <div class="col-md-12">
+                            <!-- DATA TABLE-->
+                            <div class="table-responsive m-b-40">
+                                <table class="table table-bordered table-data3">
+                                    <thead style="background:#8cbf43;">
+                                        <tr>
+                                          <th  class="m-0">Nom(s)</th>
+                                          <th  class="m-0">Prix</th>
+                                          <th  class="m-0">Description(s)</th>
+                                          <th  class="m-0">Quantité(s)</th>
+                                          <th  class="m-0">Place(s)</th>
+                                          <th  class="m-0">Image(s)</th>
+                                          <th  class="m-0">Prescription?</th>
+                                          <th  class="m-0">Dates D'ajout</th>
+                                          <th  class="m-0">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-dark">
+                                        {% for produit in produits %}
+                                        <tr>
+                                            <td>{{ produit.nom }}</td>
+                                            <td>{{ produit.prix }} GNF</td>
+                                            <td>{% if produit.description %}{{produit.description|slice:":40"}}...{% else %} Vide{% endif %}</td>
+                                            <td>{{ produit.quantite }}</td>
+                                            <td>{{ produit.place }}</td>
+                                            <td>  {% if produit.image %}
+                                                <img src="{{ produit.image.url }}" alt="" width="100px">
+                                                {% else %}
+                                                Pas d'image
+                                                {% endif %}</td>
+                                            <td>{% if produit.odronnance  %}Oui {% else %} Non {% endif %}</td>
+                                            <td>{{ produit.created_at }}</td>
+                                            <td>
+                                                <div class="table-data-feature">
+
+                                                    <a href="{%url 'modifier_produit' produit.pk%}"><button class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editer">
+                                                      <i class="zmdi zmdi-edit"></i>
+                                                    </button></a>
+
+                                                    <a href="{%url 'sup_produit' produit.pk %}"> <button onclick="return confirm('voulez-vous supprimer ce produit ? ')" class="item" data-toggle="tooltip" id="delete" data-placement="top" title="" data-original-title="supprimer">
+                                                          <i class="zmdi  zmdi-delete"></i>
+                                                    </button></a>
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                        {%empty%}
+                                        <h2 class="text-center"> Aucun produit n'a été ajouté pour le moment </h2>
+                                        <br>
+                                        {% endfor %}
+                                    </tbody>
+
+                            </table>
+
+
+                        </div>
+                        <!-- END DATA TABLE-->
+                    </div>
+            </div>
+        </div>
+        <!-- END MAIN CONTENT-->
+        <!-- END PAGE CONTAINER-->
+    </div>
+
+
+
+
+
+{% endblock %}

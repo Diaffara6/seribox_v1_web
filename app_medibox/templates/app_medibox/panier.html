@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            {% if panier %}
+                <h1>Votre panier :</h1>
+                <p class="font-weight-bold">Total du panier : {{ panier.total }} GNF</p>
+
+
+                <h2>Contenu du panier :</h2>
+                <ul class="list-group">
+                    {% for commande in contenu_panier %}
+                        <li class="list-group-item">
+                         {% if commande.produit.image %}<img src="{{ commande.produit.image.url }}" alt="" width="80px">{% endif %}
+                                       {{ commande.produit.nom }} - Quantité : {{ commande.quantite }} - Total : {{ commande.total }} GNF 
+
+                                 <script>
+
+                                    if ('speechSynthesis' in window) {
+                                        const synth = window.speechSynthesis;
+                                        var produit = "{{ commande.produit.nom }}";
+                                        var prix = "{{ commande.total }}";
+
+                                        // Utilisation d'une expression régulière pour extraire les chiffres avant la virgule
+                                        const match = prix.match(/^\d+/);
+                                        const chiffresAvantVirgule = match ? match[0] : ""; // Obtient les chiffres ou une chaîne vide
+                                        var lien = window.location.pathname;
+                                        var url_s = lien.includes('s/');
+                                        var url_p = lien.includes('p/');
+                                        var url_f = lien.includes('f/');
+                                        if(url_s)
+                                        {
+                                             var text = produit +" " + chiffresAvantVirgule + " Franc Nara ";
+                                        }
+                                         else if(url_p)
+                                        {
+                                             var text = produit + " Kô " + chiffresAvantVirgule + " Franc";
+                                        }
+                                         else if(url_f)
+                                        {
+                                             var text = "le prix du " + produit + " est " + chiffresAvantVirgule + " Franc Guinéen ";
+                                        }
+
+                                        const utterance = new SpeechSynthesisUtterance(text);
+                                        synth.speak(utterance);
+                                    } else {
+                                        alert("L'API Web Speech n'est pas prise en charge dans ce navigateur.");
+                                    }
+                                </script>
+                        </li>
+                    {% endfor %}
+                    <script>
+                        if({{taille_cmd.count}} > 1)
+                        {
+                        if ('speechSynthesis' in window) {
+                                        const synth = window.speechSynthesis;
+                                        var prix = "{{ panier.total }}";
+
+                                        // Utilisation d'une expression régulière pour extraire les chiffres avant la virgule
+                                        const match = prix.match(/^\d+/);
+                                        const chiffresAvantVirgule = match ? match[0] : ""; // Obtient les chiffres ou une chaîne vide
+                                        var lien = window.location.pathname;
+                                        var url_s = lien.includes('s/');
+                                        var url_p = lien.includes('p/');
+                                        var url_f = lien.includes('f/');
+                                        if(url_s)
+                                        {
+                                             var text = chiffresAvantVirgule + " Franc Nan-naa I-ra SERI bi-rim Saré Ra ";
+
+                                        }
+                                         else if(url_p)
+                                        {
+                                             var text = "Kô " + chiffresAvantVirgule + " Franc  wonni prix lekki kin ";
+                                        }
+                                         else if(url_f)
+                                        {
+                                             var text = " le prix de votre commande est " + chiffresAvantVirgule + " Franc Guinéen ";
+                                        }
+
+                                        const utterance = new SpeechSynthesisUtterance(text);
+                                        synth.speak(utterance);
+                                    } else {
+                                        alert("L'API Web Speech n'est pas prise en charge dans ce navigateur.");
+                                    }
+                        }
+
+                    </script>
+                </ul>
+                <div class="mt-4">
+                    <button id="btnValide" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                         Valider la commande
+                    </button>
+                    <a href="{% url 'vider_panier' %}" class="btn btn-danger ml-2">
+                        Vider le panier
+                    </a>
+                </div>
+            {% else %}
+            <script>
+        if ('speechSynthesis' in window) {
+            const synth = window.speechSynthesis;
+
+            const text = "Céecée Mouna i i ra panier koui";
+            const utterance = new SpeechSynthesisUtterance(text);
+            synth.speak(utterance);
+
+        } else {
+            alert("L'API Web Speech n'est pas prise en charge dans ce navigateur.");
+        }
+    </script>
+                <h1>Votre panier est vide</h1>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</div> 
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Code Marchant: ( 123456 ) </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post">
+           {% csrf_token %}
+      <div class="modal-body">
+
+        <label for="code" class="h5"> 1) Taper: *144*6*123456*{{ panier.total }}*votre_code_OM#</label>
+           <p class="h4 text-center ">OU </p>
+
+          <img style="margin-left:160px;" src="{% static 'web.png' %}" width="150px">
+
+          <p class="h5 text-center ">2) Saisir le code recu par message </p>
+
+       <input style="width: 308px; margin-left:85px;" type="number" id='code' name="code" placeholder=" ICI " required>
+
+          
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="monBouton" class="btn btn-primary">Valider</button>
+        <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+    // Sélection du bouton par son ID
+    const bouton = document.getElementById("monBouton");
+    const url = "{% url 'valider_commande' %}";
+    // Ajout d'un écouteur d'événement pour le clic sur le bouton
+    bouton.addEventListener("click", function() {
+       window.location.href = url;
+    });
+
+
+</script>
+
+<script>
+     var lien = window.location.pathname;
+     var url_v = lien.includes('v/');
+     if(url_v)
+     {
+      document.addEventListener("DOMContentLoaded", function() {
+            // Find the button by its ID
+            const btnValide = document.getElementById("btnValide");
+            btnValide.click();
+        });
+     }
+
+</script>
+
+
+{% endblock %}

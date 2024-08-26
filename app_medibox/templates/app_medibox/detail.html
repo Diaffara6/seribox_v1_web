@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+    
+        <div class="col-md-6">
+            <img src="{{ produit.image.url }}" alt="{{ produit.nom }}" class="img-fluid">
+        </div>
+        
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ produit.nom }}</h1>
+            <p>{{ produit.description }}</p>
+            <p class="font-weight-bold">{{ produit.prix }} GNF</p>
+
+            <form id="ajouter-panier-form" method="post" action="{% url 'ajouter_au_panier' produit.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="quantite">Quantité :</label>
+                    <input type="number" name="quantite" id="quantite" value="{% if cmd %}{{ cmd.quantite }}{% else %}1{% endif %}" min="1" class="form-control">
+                </div>
+                <button type="submit" class="btn font-weight-bold" style="background-color: #8cbf43; color: aliceblue;">Ajouter au panier</button>
+            </form>
+
+            <button class="btn mt-3 font-weight-bold" data-bs-toggle="modal" style="background-color: #1474b8; color: aliceblue;" data-bs-target="#exampleModal">
+                Commander directement
+            </button>
+
+         <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Code de validation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post">
+      {% csrf_token %}
+    <div class="modal-body">
+        
+        <label for="code" class="h5"> 1) Taper: *144*6*123456*{{ panier.total }}*votre_code_OM#</label>
+           <p class="h4 text-center ">OU </p>
+
+          <img style="margin-left:160px;" src="{% static 'web.png' %}" width="150px">
+
+          <p class="h5 text-center ">2) Saisir le code recu par message </p>
+        <input type="number" name="code" style="width: 308px; margin-left:85px;" placeholder="Saisir le code ici" required>
+    </div>
+    <div class="modal-footer">
+        <button type="button" id="monBouton" class="btn btn-primary">Valider</button>
+        <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+    </div>
+</form>
+
+    </div>
+  </div>
+</div>
+<script>
+    // Sélection du bouton par son ID
+    const bouton = document.getElementById("monBouton");
+    // Ajout d'un écouteur d'événement pour le clic sur le bouton
+    function validerCommande() {
+                    const form = document.getElementById('ajouter-panier-form');
+                    form.action = "{% url 'valider_commande_directe' produit.id %}";
+                    form.submit();
+                }
+                
+    bouton.addEventListener("click", function() {
+          validerCommande()
+    });
+</script>
+
+
+            <script>
+                
+            </script>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center m-3 ">Autres médicaments</h2>
+        </div>
+    </div>
+    <div class="row">
+        {% for other_product in pall %}
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{{ other_product.image.url }}" class="card-img-top" alt="{{ other_product.nom }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ other_product.nom }}</h5>
+                    <p class="card-text">{{ other_product.description }}</p>
+                    <p class="font-weight-bold">{{ other_product.prix }} GNF</p>
+                    <!-- Add to cart form for 'other_product' -->
+                    <form method="post" action="{% url 'ajouter_au_panier' other_product.id %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="quantite">Quantité :</label>
+                            <input type="number" name="quantite" id="quantite" value="1" min="1" style="width: 308px; margin-left:85px;" class="form-control">
+                        </div>
+                        <button type="submit" class="btn font-weight-bold " style="background-color: #1474b8; color: aliceblue;">Ajouter au panier</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% for p in produits %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <a href="{% url 'detail' p.id %}">
+                    <img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.nom }}">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ p.nom }}</h5>
+                    <p class="card-text">{{ p.description }}</p>
+                    <p class="card-text">{{ p.prix }} GNF</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'detail' p.id %}" class="btn btn-block" style="background-color: #1474b8; color: aliceblue; font-weight: bold;">Voir les détails</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-md-12">
+            <p class="text-center">Aucun produit trouvé.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

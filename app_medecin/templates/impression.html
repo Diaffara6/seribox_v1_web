@@ -1,0 +1,47 @@
+{% extends 'baseM.html' %}
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Tangerine">
+{% block content %}
+
+
+<div class="container d-flex justify-content-center align-items-center vh-80 ">
+    <div class="card col-lg-6">
+        <div class="card-body d-flex flex-column">
+            <h3>Seri-Box</h3> 
+            <h3 style="font-family: 'Tangerine', serif;" class="text-center">Prescription N°{{ p.pk }}</h3><br>
+        <div class="d-flex flex-column align-items-center"> 
+            {% if p.med1 %}
+                <p> 1) {{p.med1}} </p>
+            {% endif %}
+                
+            {% if p.med2 %}
+                <p> 2) {{p.med2}} </p>
+            {% endif %}
+
+            {% if p.med3 %}
+                <p> 3) {{p.med3}} </p>
+            {% endif %}
+
+            {% if p.med4 %}
+                <p> 4) {{p.med4}} </p>
+            {% endif %}
+
+            <img src="{{ p.qr_code.url }}" alt="{{p.qr_code.url.name}}" height="80px" width="80px" /><br><br>
+        </div>
+            <button class="btn btn-success" name="imprimer" id="imprimer">Imprimer</button>
+ 
+        </div>
+    </div>
+</div>
+<script> 
+    function imprimerPage() {
+        window.print();
+      }
+      
+      const boutonImprimer = document.getElementById('imprimer');
+      boutonImprimer.addEventListener('click', imprimerPage);
+      
+</script>
+
+
+{% endblock %}
